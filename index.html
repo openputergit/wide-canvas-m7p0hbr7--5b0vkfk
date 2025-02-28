@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShortVids</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .video-container {
+            scroll-snap-type: y mandatory;
+            height: calc(100vh - 4rem);
+        }
+        .video-item {
+            scroll-snap-align: start;
+        }
+        .engagement-buttons button:active {
+            transform: scale(0.95);
+        }
+        .gradient-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+        }
+        .like-animation {
+            animation: likeEffect 0.5s ease-in-out;
+        }
+        @keyframes likeEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .tab-active {
+            color: #ef4444;
+            position: relative;
+        }
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-hidden">
+    <!-- Top Navigation -->
+    <div class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/50 to-transparent px-4 py-3 flex justify-between items-center">
+        <div class="text-xl font-bold">Short<span class="text-red-500">Vids</span></div>
+        <div class="flex items-center space-x-6">
+            <button class="text-2xl hover:text-red-500 transition-colors"><i class="bi bi-search"></i></button>
+            <div class="relative">
+                <button class="text-2xl hover:text-red-500 transition-colors"><i class="bi bi-bell"></i></button>
+                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-2 h-2"></span>
+            </div>
+            <button class="bg-red-500 px-3 py-1 rounded-full text-sm flex items-center hover:bg-red-600 transition-colors">
+                <i class="bi bi-broadcast mr-1"></i> Live
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Feed -->
+    <div class="video-container overflow-y-scroll">
+        <div id="video-feed"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 w-full bg-gradient-to-t from-black/50 to-transparent h-16 flex justify-around items-center">
+        <button class="text-2xl tab-active"><i class="bi bi-house-door-fill"></i></button>
+        <button class="text-2xl hover:text-red-500 transition-colors"><i class="bi bi-compass"></i></button>
+        <button class="text-2xl bg-red-500 p-3 rounded-full hover:bg-red-600 transition-colors"><i class="bi bi-plus-lg"></i></button>
+        <button class="text-2xl hover:text-red-500 transition-colors"><i class="bi bi-chat"></i></button>
+        <button class="text-2xl hover:text-red-500 transition-colors"><i class="bi bi-person"></i></button>
+    </div>
+
+    <script type="module">
+        const videoData = [
+            {
+                username: "@dancequeen",
+                description: "New dance challenge! 💃 Try this out! #dance #viral #trending",
+                likes: "1.2M",
+                comments: "45.2K",
+                shares: "102K",
+                videoUrl: "https://images.unsplash.com/photo-1516422641841-cd9803ab9494"
+            },
+            {
+                username: "@foodiechef",
+                description: "Quick and easy pasta recipe 🍝 #cooking #food #recipe",
+                likes: "892K",
+                comments: "23.1K",
+                shares: "56K",
+                videoUrl: "https://images.unsplash.com/photo-1551218372-a8789b81b253"
+            },
+            {
+                username: "@fitnessguru",
+                description: "5-minute ab workout! 💪 #fitness #workout #health",
+                likes: "567K",
+                comments: "12.3K",
+                shares: "34K",
+                videoUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438"
+            }
+        ];
+
+        const videoFeed = document.getElementById('video-feed');
+
+        function createVideoElement(video) {
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-item relative h-screen w-full';
+            videoItem.innerHTML = `
+                <div class="absolute inset-0">
+                    <img src="${video.videoUrl}" class="w-full h-full object-cover" alt="video content">
+                    <div class="gradient-overlay absolute inset-0"></div>
+                </div>
+                <div class="absolute right-4 bottom-20 engagement-buttons flex flex-col items-center space-y-6">
+                    <button class="flex flex-col items-center group">
+                        <i class="bi bi-heart text-3xl group-hover:text-red-500 transition-colors"></i>
+                        <span class="text-xs mt-1">${video.likes}</span>
+                    </button>
+                    <button class="flex flex-col items-center group">
+                        <i class="bi bi-chat-dots text-3xl group-hover:text-red-500 transition-colors"></i>
+                        <span class="text-xs mt-1">${video.comments}</span>
+                    </button>
+                    <button class="flex flex-col items-center group">
+                        <i class="bi bi-share text-3xl group-hover:text-red-500 transition-colors"></i>
+                        <span class="text-xs mt-1">${video.shares}</span>
+                    </button>
+                    <button class="group">
+                        <img src="${video.videoUrl}" class="w-10 h-10 rounded-full border-2 border-white group-hover:border-red-500 transition-colors" alt="profile">
+                    </button>
+                </div>
+                <div class="absolute bottom-24 left-4 right-20">
+                    <div class="font-semibold mb-2">${video.username}</div>
+                    <div class="text-sm">${video.description}</div>
+                    <div class="mt-2 flex items-center">
+                        <i class="bi bi-music-note text-sm mr-2"></i>
+                        <span class="text-sm">Original Sound - ${video.username}</span>
+                    </div>
+                </div>
+            `;
+            return videoItem;
+        }
+
+        // Populate video feed
+        videoData.forEach(video => {
+            videoFeed.appendChild(createVideoElement(video));
+        });
+
+        // Handle engagement button clicks with animation
+        document.addEventListener('click', (e) => {
+            const button = e.target.closest('.engagement-buttons button');
+            if (button) {
+                const icon = button.querySelector('i');
+                if (icon.classList.contains('bi-heart')) {
+                    icon.classList.toggle('text-red-500');
+                    icon.classList.add('like-animation');
+                    setTimeout(() => icon.classList.remove('like-animation'), 500);
+                }
+            }
+        });
+
+        // Enhanced smooth scrolling
+        const container = document.querySelector('.video-container');
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        container.addEventListener('touchstart', e => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        container.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            if (Math.abs(diff) > 50) {
+                const direction = diff > 0 ? 1 : -1;
+                const currentScroll = container.scrollTop;
+                const nextScroll = Math.round((currentScroll + direction * window.innerHeight) / window.innerHeight) * window.innerHeight;
+                container.scrollTo({
+                    top: nextScroll,
+                    behavior: 'smooth'
+                });
+            }
+        }, { passive: true });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
